@@ -7,15 +7,14 @@ import (
 	"rest-api-postgres/internal/restdb"
 
 	"github.com/go-chi/chi/v5"
-	// "github.com/go-chi/chi/v5/middleware"
 	_ "github.com/lib/pq"
 )
 
 const (
 	HOST     = "localhost"
-	DATABASE = "data"
-	USER     = "app"
-	PASSWORD = "1234"
+	DATABASE = "postgres"
+	USER     = "postgres"
+	PASSWORD = "docker"
 	SSLMODE  = "disable"
 )
 
