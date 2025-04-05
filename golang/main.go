@@ -44,7 +44,7 @@ func main() {
 		w.Header().Add("Connection", "keep-alive")
 		w.Header().Add("Content-Type", "application/json; charset=utf-8")
 		w.Header().Add("Keep-Alive", "timeout=5")
-		stmt := "select * from hist_msft"
+		stmt := "select id, date, close, open, volume, high, low from hist_msft"
 		res := restdb.Query(db, stmt)
 		w.Write(res)
 	})

@@ -52,15 +52,18 @@ func runPerfTest(endpoint string, requests int) string {
 		go func() {
 			defer wg.Done()
 
+			// Create http client
+			client := http.Client{Timeout: time.Second * 20}
+
 			// Time api response
 			start := time.Now()
-			res, err := http.Get(endpoint)
+			res, err := client.Get(endpoint)
 			end := time.Now()
 
 			mutex.Lock()
 			defer mutex.Unlock()
 			// track error count separately from ok
-			if err != nil || res.StatusCode != 200 {
+			if err != nil || res.StatusCode >= 400 {
 				stats.errorCount++
 				return
 			}

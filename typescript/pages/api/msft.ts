@@ -8,9 +8,5 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   const queryRes = await db.select().from(hist_msft);
-  queryRes.forEach((r) => {
-    r.volume = r.volume.toString()
-    r.close = r.close.toString()
-  })
   res.status(200).json(queryRes);
 }

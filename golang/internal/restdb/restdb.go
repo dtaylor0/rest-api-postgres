@@ -4,28 +4,19 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"time"
+
 	_ "github.com/lib/pq"
 )
 
 type Row struct {
-	Id     int    `json:"id"`
-	Date   string `json:"date"`
-	Close  string `json:"close"`
-	Volume string `json:"volume"`
-	High   string `json:"high"`
-	Low    string `json:"low"`
-}
-
-func newRow(
-	id int,
-	date string,
-	close string,
-	volume string,
-	high string,
-	low string,
-) *Row {
-	r := Row{id, date, close, volume, high, low}
-	return &r
+	Id     int       `json:"id"`
+	Date   time.Time `json:"date"`
+	Close  float32   `json:"close"`
+	Open   float32   `json:"open"`
+	Volume int64     `json:"volume"`
+	High   float32   `json:"high"`
+	Low    float32   `json:"low"`
 }
 
 func Query(db *sql.DB, stmt string) []byte {
@@ -37,22 +28,18 @@ func Query(db *sql.DB, stmt string) []byte {
 	defer rows.Close()
 
 	// Parse results of select query
-	var id int
-	var date string
-	var close string
-	var volume string
-	var high string
-	var low string
-
-	// result array
 	rowSlice := [](*Row){}
 	for rows.Next() {
-		switch err := rows.Scan(&id, &date, &close, &volume, &high, &low); err {
+		row := Row{}
+		switch err := rows.Scan(
+			&row.Id, &row.Date, &row.Close,
+			&row.Open, &row.Volume, &row.High,
+			&row.Low,
+		); err {
 		case sql.ErrNoRows:
 			fmt.Println("No rows returned")
 		case nil:
-			r := newRow(id, date, close, volume, high, low)
-			rowSlice = append(rowSlice, r)
+			rowSlice = append(rowSlice, &row)
 		default:
 			panic(err)
 		}
